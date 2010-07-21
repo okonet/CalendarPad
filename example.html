@@ -25,8 +25,8 @@
     
     var myCal = new Calendar('calendar', {
       selectedDate: $('eventdate').get('value'),
-      onSelect: function(date){
-        $('eventdate').set('value', date.year + '-' + date.month + '-' + date.day);
+      onSelect: function(e){
+        $('eventdate').set('value', e.date.format('%Y-%m-%d'));
       },
     });
     

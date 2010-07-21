@@ -36,66 +36,91 @@
       'months': 3,
       'weekStartsOnMonday': true, // Use false for Sunday,
       'weekDayNameLength': 3, // 1 for "M", 3 for "Mon", -1 for "Monday"
-      'disablePrevNextMonth': true,
       'selectedDate': ''
     },
 
     initialize: function(element, options) {
       this.setOptions(options);
-      this.container = $(element);
+      this.container = $(element).addClass('datepicker-component');
 
       var now = new Date(),
-          selected = this.options.selectedDate ? new Date().parse(this.options.selectedDate) : null,
-          today = now.getFullYear() + '-' + now.getMonth() + '-' + now.getDate();
+          selected = this.options.selectedDate ? new Date().parse(this.options.selectedDate) : null;
+          today = now.clearTime();
 
       if(selected) {
-        var active = selected.getFullYear() + '-' + selected.getMonth() + '-' + selected.getDate();
-        var month = selected.getMonth();
-        var year = selected.getFullYear();
+        // var active  = selected.get('year') + '-' + selected.get('month') + '-' + selected.get('date');
+        var month   = selected.get('month');
+        var year    = selected.get('year');
       } else {
-        var month = now.getMonth();
-        var year = now.getFullYear();
+        var month   = now.get('month');
+        var year    = now.get('year');
       }
 
       this.today = today;
       this.now = now;
-      this.active = active;
-      this.active_month = month;
-      this.active_year = year;
-      // this.siblings = this.sibling_months(this.active_year, this.active_month);
+      this.active = selected;
+      
+      // Current visible year/month which is in the middle of the pad
+      this.month = month;
+      this.year = year;
+      
+      // Day of week names
+      this.dayNames = $A(Date.getMsg('days'));
+      if(this.options.weekStartsOnMonday) {
+        this.dayNames[0] = null;
+        this.dayNames.push(Date.getMsg('days')[0]);
+        this.dayNames = this.dayNames.clean();
+      }
 
-      this.build(year, month);
-
+      // Build HTML
+      this.container.empty();
+      var controls = new Element('div', { 'class': 'datepicker-controls' });
+      var previous = new Element('a', {
+        'class': 'datepicker-control datepicker-previous',
+        'html': '&laquo;',
+        'href': '#'
+      }).inject(controls);
+      var next = new Element('a', {
+        'class': 'datepicker-control datepicker-next',
+        'html': '&raquo;',
+        'href': '#'
+      }).inject(controls);
+            
+      this.pad = this.build(year, month);
+      this.wrap = new Element('div', { 'class': 'datepicker-wrapper' }).grab(this.pad);
+      this.container.adopt(controls, this.wrap);
+      
+      // Add event listeners
       this.container.addEvents({
         'click:relay(.datepicker-previous)': function(e){
           e.preventDefault();
 
-          var siblings = this.sibling_months(this.active_year, this.active_month);
-          this.active_month  = siblings.previous_month;
-          this.active_year   = siblings.previous_year;
+          var next = new Date(this.year, this.month).decrement('month', 3);
+          this.month  = next.get('month');
+          this.year   = next.get('year');
 
-          this.months.addClass('slide-right');
-          var new_cals = this.renderCalenders(this.active_year, this.active_month).addClass('slide-left');
-          this.wrap.grab(new_cals);
-          (function(){ new_cals.removeClass('slide-left'); }).delay(1);
+          this.pad.addClass('slide-right');
+          this.pad = this.build(this.year, this.month).addClass('slide-left');
+          this.pad.inject(this.wrap);
+          (function(){ this.pad.removeClass('slide-left'); }).delay(1, this); // We need this delay to start animation
 
-          this.fireEvent('onPrevious', [e, this.active_year, this.active_month]);
+          this.fireEvent('onPrevious', [e, this.year, this.month]);
 
         }.bindWithEvent(this),
 
         'click:relay(.datepicker-next)': function(e){
           e.preventDefault();
 
-          var siblings = this.sibling_months(this.active_year, this.active_month);
-          this.active_month  = siblings.next_month;
-          this.active_year   = siblings.next_year;
+          var next = new Date(this.year, this.month).increment('month', 3);
+          this.month  = next.get('month');
+          this.year   = next.get('year');
 
-          this.months.addClass('slide-left');
-          var new_cals = this.renderCalenders(this.active_year, this.active_month).addClass('slide-right');
-          this.wrap.grab(new_cals);
-          (function(){ new_cals.removeClass('slide-right'); }).delay(1);
+          this.pad.addClass('slide-left');
+          this.pad = this.build(this.year, this.month).addClass('slide-right');
+          this.pad.inject(this.wrap);
+          (function(){ this.pad.removeClass('slide-right'); }).delay(1, this); // We need this delay to start animation
 
-          this.fireEvent('onNext', [e, this.active_year, this.active_month]);
+          this.fireEvent('onNext', [e, this.year, this.month]);
 
         }.bindWithEvent(this)
       });
@@ -106,115 +131,42 @@
         }, false);
       }.bind(this));
     },
-
-    leap_year: function(year) {
-      return (!(year % 4) && (year % 100) && !(year % 400));      
-    },
-    days_in_month: function(year, month) {
-      return [31, (this.leap_year(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];     
-    },
-    month_name: function(month) {
-      return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][month];  
-    },
-    sibling_months: function(year, month){
-      if (month == 0) {
-        var previous_year = (year - 1),
-            previous_month = 11,
-            days_in_previous_month = this.days_in_month(previous_year, previous_month);
-      } else {
-        var previous_year = year,
-            previous_month = (month - 1),
-            days_in_previous_month = this.days_in_month(previous_year, previous_month);
-      }
-
-      if (month == 11) {
-        var next_month = 0,
-            next_year = (year + 1);
-      } else {
-        var next_month = (month + 1),
-            next_year = year;
-      }
-
-      return {
-        'next_year': next_year,
-        'next_month': next_month,
-        'previous_year': previous_year,
-        'previous_month': previous_month,
-        'days_in_previous_month': days_in_previous_month
-      };
-    },
+    
     build: function(year, month){
-      this.container.empty();
-
-      var siblings = this.sibling_months(year, month),
-          next_month = siblings.next_month,
-          next_year = siblings.next_year,
-          previous_month = siblings.previous_month,
-          previous_year = siblings.previous_year;
-
-      var controls = new Element('div', { 'class': 'datepicker-controls' });
-
-      var previous = new Element('a', {
-        'class': 'datepicker-control datepicker-previous',
-        'html': '&laquo;',
-        'href': '#'
-      }).inject(controls);
-
-      var next = new Element('a', {
-        'class': 'datepicker-control datepicker-next',
-        'html': '&raquo;',
-        'href': '#'
-      }).inject(controls);
-
-      this.wrap = new Element('div', { 'class': 'datepicker-wrapper' }).grab(this.renderCalenders(year, month));
-      this.container.adopt(controls, this.wrap);
-
+      var curr = new Date(year, month),
+          next = new Date(year, month).increment('month', 1),
+          prev = new Date(year, month).decrement('month', 1),
+          pad  = new Element('div', { 'class': 'datepicker-months' });
+      
+      [prev, curr, next].each(function(d){
+        this.renderMonth(d.get('year'), d.get('month')).inject(pad);
+      }.bind(this));
+      
       this.fireEvent('onBuild');
+      return pad;
     },
-    renderCalenders: function(year, month){
-      var siblings = this.sibling_months(year, month),
-          next_month = siblings.next_month,
-          next_year = siblings.next_year,
-          previous_month = siblings.previous_month,
-          previous_year = siblings.previous_year;
-
-      var cal1 = this.renderMonth(previous_year, previous_month);
-      var cal2 = this.renderMonth(year, month);
-      var cal3 = this.renderMonth(next_year, next_month);
-
-      this.months = new Element('div', { 'class': 'datepicker-months' }).adopt(cal1, cal2, cal3);
-
-      return this.months;
-    },
+    
     renderMonth: function(year, month) {
       var self = this,
-          now = self.now,
-          calendar = new Element('div', {
-            'class': 'datepicker-calendar'
-          });
+          calendar = new Element('div', { 'class': 'datepicker-calendar' });
 
-      now.set('year', year).set('month', month).set('date', 1);
+      var curr = new Date(year, month),
+          next = new Date(year, month).increment('month', 1),
+          prev = new Date(year, month).decrement('month', 1);
 
-      var siblings = this.sibling_months(year, month),
-          next_month = siblings.next_month,
-          next_year = siblings.next_year,
-          previous_month = siblings.previous_month,
-          previous_year = siblings.previous_year;
-          days_in_previous_month = siblings.days_in_previous_month;
+      var runningDay = new Date(year,month).get('day') - (this.options.weekStartsOnMonday ? 1 : 0),
+          daysInMonth = Date.daysInMonth(month, year),
+          daysInThisWeek = 1,
+          dayCounter = 0;
 
-      var running_day = now.getDay() - (this.options.weekStartsOnMonday ? 1 : 0),
-          days_in_month = self.days_in_month(year, month),
-          days_in_this_week = 1,
-          day_counter = 0;
+      if(runningDay < 0) runningDay = 6;
 
-      if(running_day < 0) running_day = 6;
-
-      var title = new Element('div', {
+      new Element('div', {
         'class': 'datepicker-title',
-        'text': self.month_name(month) + ' ' + year
+        'text': Date.getMsg('months')[month] + ' ' + year
       }).inject(calendar);
-
-      (this.options.weekStartsOnMonday ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']).each(function(day) {
+      
+      this.dayNames.each(function(day) {
         new Element('abbr', {
           'class': 'datepicker-day-title',
           'text': (self.options.weekDayNameLength > 0 ? day.substr(0, self.options.weekDayNameLength) : day),
@@ -222,33 +174,20 @@
         }).inject(calendar);
       });
 
-      for (i = running_day; i > 0; i--) {
+      for (i = runningDay; i > 0; i--) {
         new Element('a', {
           'class': 'datepicker-day previous-month',
-          'text': (days_in_previous_month - i + 1).toString().pad(2, '0', 'left'),
-          'href': '#',
-          'data-year': previous_year,
-          'data-month': previous_month,
-          'data-day': (days_in_previous_month - i),
-          'events': {
-            'click': function(e) {
-              e.preventDefault();
-              if(!self.options.disablePrevNextMonth)
-                self.pick(this);
-            }
-          }
+          'text': (Date.daysInMonth(prev) - i + 1).toString().pad(2, '0', 'left'),
+          'href': '#' + prev.get('year') + '-' + (prev.get('month') + 1) + '-' + Date.daysInMonth(prev) - i
         }).inject(calendar);
       }
 
-      for(i = 1; i <= days_in_month; i++) {
-        var today = year + '-' + month + '-' + i;
+      for(i = 1; i <= daysInMonth; i++) {
+        var today = new Date(year, month, i);
         new Element('a', {
-          'class': 'datepicker-day this-month' + (today == self.today ? ' today' : '') + (today == self.active ? ' active' : ''),
+          'class': 'datepicker-day this-month' + (today.diff(self.today) == 0 ? ' today' : '') + (today.diff(self.active) == 0 ? ' active' : ''),
           'text': i.toString().pad(2, '0', 'left'),
-          'href': '#',
-          'data-year': year,
-          'data-month': month,
-          'data-day': i,
+          'href': '#' + year + '-' + (month + 1) + '-' + i,
           'events': {
             'click': function(e) {
               e.preventDefault();
@@ -257,32 +196,22 @@
           }
         }).inject(calendar);
 
-    		if(running_day == 6) {
-    			running_day = -1;
-    			days_in_this_week = 0;
+    		if(runningDay == 6) {
+    			runningDay = -1;
+    			daysInThisWeek = 0;
     		}
 
-    		days_in_this_week++;
-    		running_day++;
-    		day_counter++;
+    		daysInThisWeek++;
+    		runningDay++;
+    		dayCounter++;
     	}
 
-      if(days_in_this_week > 1) {
-    		for(i = 1; i <= (8 - days_in_this_week); i++) {
+      if(daysInThisWeek > 1) {
+    		for(i = 1; i <= (8 - daysInThisWeek); i++) {
     			new Element('a', {
             'class': 'datepicker-day next-month',
             'text': i.toString().pad(2, '0', 'left'),
-            'href': '#',
-            'data-year': next_year,
-            'data-month': next_month,
-            'data-day': i,
-            'events': {
-              click: function(e) {
-                e.preventDefault();
-                if(!self.options.disablePrevNextMonth)
-                  self.pick(this);
-              }
-            }
+            'href': '#' + next.get('year') + '-' + (next.get('month') + 1) + '-' + i
           }).inject(calendar);
     		}
     	}
@@ -290,18 +219,10 @@
       return calendar;
     },
     pick: function(element) {
-      this.container.getElements('.datepicker-day').removeClass('active');
-
+      this.container.getElements('.datepicker-day.active').removeClass('active');
       element.addClass('active');
-
-      this.year = parseInt(element.get('data-year'), 10);
-      this.month = parseInt((parseInt(element.get('data-month'), 10) + 1), 10);
-      this.day = parseInt(element.get('data-day'), 10);
-
-      this.active_date = new Date().set('year', this.year).set('month', this.month).set('date', this.day);
-      this.active = this.year + '-' + (this.month - 1) + '-' + this.day;
-
-      this.fireEvent('onSelect', {'year': this.year, 'month': this.month.toString().pad(2, '0', 'left'), 'day': this.day.toString().pad(2, '0', 'left'), 'date': this.active_date});
+      this.active = new Date().parse(element.get('href'));
+      this.fireEvent('onSelect', { 'date': this.active });
     }
   });
    

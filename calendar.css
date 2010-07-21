@@ -7,7 +7,7 @@
    Copyright 2010 wollzelle GmbH (http://wollzelle.com). All rights reserved.
 */
 
-#calendar {
+.datepicker-component {
   position: relative;
   clear: both;
   margin: 1em 0;
@@ -98,7 +98,19 @@
       -moz-transform: translateX(33%);
       -o-transform: translateX(33%);      
     }
-
+    
+    .slide-left {
+      -webkit-transform: translateX(-100%);
+      -moz-transform: translateX(-100%);
+      -o-transform: translateX(-100%);      
+    }
+    .slide-right {
+      -webkit-transform: translateX(100%);
+      -moz-transform: translateX(100%);
+      -o-transform: translateX(100%);      
+    }
+    
+    
     /* Single calendar */
     .datepicker-calendar {
       float: left;
