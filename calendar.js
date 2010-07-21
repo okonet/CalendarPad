@@ -1,13 +1,23 @@
-// 
-//  calendar.js
-//
-//  Implements calendar block with 3 months and an ability to switch months.
-//
-//  license: MIT-style
-//  
-//  Created by Andrey Okonetchnikov on 2010-07.
-//  Copyright 2010 wollzelle GmbH (http://wollzelle.com). All rights reserved.
-// 
+/* 
+  calendar.js
+
+  Implements calendar block with 3 months and an ability to switch months.
+
+  license: MIT-style
+
+  Requiers: 
+  
+  * Mootools Core 1.2.4
+  * Mootools More 1.2.4:
+    - Date
+    - Hash.Extras
+    - String.Extras
+    - Element.Delegation
+  
+  Created by Andrey Okonetchnikov on 2010-07.
+  Copyright 2010 wollzelle GmbH (http://wollzelle.com). All rights reserved.
+  
+*/ 
 
 (function(){
   var $ = document.id;
