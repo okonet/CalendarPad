@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Calendar select demo</title>
+	
+  <link rel="stylesheet" href="calendar.css" type="text/css" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+  
+  <section class="container">
+    
+    <input type="date" name="eventdate" value="2010-07-01" id="eventdate">
+    
+    <div id="calendar"> </div>
+    
+  </section>
+  
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js" type="text/javascript" charset="utf-8"></script>
+  <script src="mootools-1.2.4.4-more.js" type="text/javascript" charset="utf-8"></script>
+  
+  <script src="calendar.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+    
+    var myCal = new Calendar('calendar', {
+      selectedDate: $('eventdate').get('value'),
+      onSelect: function(date){
+        $('eventdate').set('value', date.year + '-' + date.month + '-' + date.day);
+      },
+    });
+    
+    
+  </script>
+
+</body>
+</html>
