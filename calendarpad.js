@@ -27,15 +27,13 @@
     Implements: [Options, Events],
 
     options: {
-      /*
-      'onBuild': $empty,
-      'onSelect': $empty,
-      */
-      'z-index': 1,
-      'months': 3,
-      'weekStartsOnMonday': true, // Use false for Sunday,
-      'weekDayNameLength': 3, // 1 for "M", 3 for "Mon", -1 for "Monday"
-      'selectedDate': ''
+      displayMonths       : 3,      // How many months to switch back/forward
+      weekStartsOnMonday  : true,   // Use false for Sunday,
+      weekDayNameLength   : 3,      // 1 for "M", 3 for "Mon", -1 for "Monday"
+      selectedDate        : '',     // By default, no date is selected
+      onBuild             : $empty, // Callback: fires then pad contents were updated
+      onSwitch            : $empty, // Callback: fires then user switches the pad back/forward
+      onSelect            : $empty  // Callback: fires then user picks a date
     },
 
     initialize: function(element, options) {
@@ -94,7 +92,7 @@
         'click:relay(.calendarpad-previous)': function(e){
           e.preventDefault();
 
-          var next = new Date(this.year, this.month).decrement('month', 3);
+          var next = new Date(this.year, this.month).decrement('month', this.options.displayMonths);
           this.month  = next.get('month');
           this.year   = next.get('year');
 
@@ -103,14 +101,14 @@
           this.pad.inject(this.wrap);
           (function(){ this.pad.removeClass('slide-left'); }).delay(1, this); // We need this delay to start animation
 
-          this.fireEvent('onPrevious', [e, this.year, this.month]);
+          this.fireEvent('onSwitch', [e, this.year, this.month]);
 
         }.bindWithEvent(this),
 
         'click:relay(.calendarpad-next)': function(e){
           e.preventDefault();
 
-          var next = new Date(this.year, this.month).increment('month', 3);
+          var next = new Date(this.year, this.month).increment('month', this.options.displayMonths);
           this.month  = next.get('month');
           this.year   = next.get('year');
 
@@ -119,7 +117,7 @@
           this.pad.inject(this.wrap);
           (function(){ this.pad.removeClass('slide-right'); }).delay(1, this); // We need this delay to start animation
 
-          this.fireEvent('onNext', [e, this.year, this.month]);
+          this.fireEvent('onSwitch', [e, this.year, this.month]);
 
         }.bindWithEvent(this)
       });
