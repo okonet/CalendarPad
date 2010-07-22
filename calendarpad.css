@@ -27,15 +27,15 @@
       text-decoration: none;
       text-align: center;
       vertical-align: middle;
-      background-color: #efefef;
-      color: #ccc;
+      background-color: #eff3f9;
+      color: #ccd;
       text-shadow: 1px 1px 0 #fff;
       height: 195px;
       width: 40px;
     }
     .calendarpad-control:hover {
-      background-color: #ddd;
-      color: #999;
+      background-color: #dfe3e9;
+      color: #99A;
     }
     a.calendarpad-previous {
       left: 0;
@@ -161,26 +161,31 @@
     .calendarpad-calendar a {
       text-decoration: none;
       outline: none;
-      color: #000;
-      background-color: #f9f9ff;
+      color: #889;
+      text-shadow: 0 1px 0 #fff;
+      background-color: #f9fcff;
     }
     .calendarpad-calendar a:hover {
-      background-color: #ffc;
+      color: #fff;
+      background-color: #84b9e3;
+      text-shadow: 0 1px 0 #36c;
     }
-      .calendarpad-calendar a.previous-month {
-        color: #FFF;
-        background-color: #FFF;
-        cursor: default;
-      }
-      .calendarpad-calendar a.next-month {
-        color: #FFF;
-        background-color: #FFF;
-        cursor: default;
-      }
-      .calendarpad-day.active {
-        color: #fff !important;
-        background-color: #5489C3 !important;
-      }
-      .calendarpad-day.today {
-        background-color: #dde;
-      }
+    
+    .calendarpad-day.active {
+      font-weight: bold;
+      color: #fff !important;
+      background-color: #5489c3 !important;
+      text-shadow: 0 1px 0 #300;
+    }
+    .calendarpad-day.today {
+      color: #000;
+      background-color: #dfe3e9;
+    }
+    
+    .calendarpad-calendar a.previous-month,
+    .calendarpad-calendar a.next-month {
+      color: #fff;
+      background-color: #fff;
+      text-shadow: 0 0 0 #fff;
+      cursor: default;
+    }
