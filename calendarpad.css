@@ -1,0 +1,186 @@
+/*
+   calendarpad.css
+   
+   license: MIT-style
+   
+   Created by Andrey Okonetchnikov on 2010-07.
+   Copyright 2010 wollzelle GmbH (http://wollzelle.com). All rights reserved.
+*/
+
+.calendarpad-component {
+  position: relative;
+  clear: both;
+  margin: 1em 0;
+  overflow: hidden;
+  zoom: 1;
+}
+  /* Controls */
+  .calendarpad-controls {
+    width: 100%;
+  }
+    .calendarpad-control {
+      position: absolute;
+      display: block;
+      margin-top: 29px;
+      font-size: 32px;
+      line-height: 195px;
+      text-decoration: none;
+      text-align: center;
+      vertical-align: middle;
+      background-color: #efefef;
+      color: #ccc;
+      text-shadow: 1px 1px 0 #fff;
+      height: 195px;
+      width: 40px;
+    }
+    .calendarpad-control:hover {
+      background-color: #ddd;
+      color: #999;
+    }
+    a.calendarpad-previous {
+      left: 0;
+      -moz-border-radius-topleft: 6px;
+      -moz-border-radius-bottomleft: 6px;
+      -webkit-border-top-left-radius: 6px;
+      -webkit-border-bottom-left-radius: 6px;
+    }
+    a.calendarpad-next {
+      right: 0;
+      -moz-border-radius-topright: 6px;
+      -moz-border-radius-bottomright: 6px;
+      -webkit-border-top-right-radius: 6px;
+      -webkit-border-bottom-right-radius: 6px;
+    }  
+  
+  
+  /* CalendarPads wrapper */
+  .calendarpad-wrapper {
+    position: relative;
+    margin: 0 40px;
+    height: 240px;
+    overflow: hidden;
+    zoom: 1;
+  }
+    .calendarpad-months {
+      position: absolute;
+      top: 0;
+      left: 5px;
+      width: 100%;
+      height: 240px;
+    
+      -webkit-transform: translateX(0);
+      -moz-transform: translateX(0);
+      -o-transform: translateX(0);
+    
+      /* Mobile devices need this */
+      -webkit-transform-style: preserve-3d;
+
+      -webkit-transition-property: -webkit-transform;
+      -webkit-transition-duration: .5s;  
+      -webkit-transition-timing-function: cubic-bezier(0.5, 0.3, 0.2, 1);
+
+      -moz-transition-property: -moz-transform;
+      -moz-transition-duration: .5s;  
+      -moz-transition-timing-function: cubic-bezier(0.5, 0.3, 0.2, 1);
+
+      -o-transition-property: -o-transform;
+      -o-transition-duration: .5s;  
+      -o-transition-timing-function: cubic-bezier(0.5, 0.3, 0.2, 1);
+    }
+    
+    
+    /* ====================== */
+    /* = Scroll for 1 month = */
+    /* ====================== */
+/*    .slide-left {
+      -webkit-transform: translateX(-33%);
+      -moz-transform: translateX(-33%);
+      -o-transform: translateX(-33%);      
+    }
+    .slide-right {
+      -webkit-transform: translateX(33%);
+      -moz-transform: translateX(33%);
+      -o-transform: translateX(33%);      
+    }
+*/
+
+    /* ======================= */
+    /* = Scroll for 3 months = */
+    /* ======================= */   
+    .slide-left {
+      -webkit-transform: translateX(-100%);
+      -moz-transform: translateX(-100%);
+      -o-transform: translateX(-100%);      
+    }
+    .slide-right {
+      -webkit-transform: translateX(100%);
+      -moz-transform: translateX(100%);
+      -o-transform: translateX(100%);      
+    }
+    
+    
+    /* Single calendar */
+    .calendarpad-calendar {
+      float: left;
+      width: 33%;
+      margin: 0 0.15%;
+      padding: 0px;
+      cursor: default;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 12px;
+      overflow: hidden;
+      zoom: 1;
+      background-color: #fff;
+    }
+    .calendarpad-day-title, .calendarpad-day {
+      width: 14.2%;
+      height: 28px;
+      line-height: 28px;
+      float: left;
+      text-align: center;
+    }
+
+    .calendarpad-title {
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      position: relative;
+      border-bottom: 1px solid #ddd;
+      color: #000;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .calendarpad-day-title {
+      color: #ccc;
+      font-size: 11px;
+      line-height: 1;
+      border-bottom: 1px solid #ddd;
+      height: 18px;
+    }
+
+    .calendarpad-calendar a {
+      text-decoration: none;
+      outline: none;
+      color: #000;
+      background-color: #f9f9ff;
+    }
+    .calendarpad-calendar a:hover {
+      background-color: #ffc;
+    }
+      .calendarpad-calendar a.previous-month {
+        color: #FFF;
+        background-color: #FFF;
+        cursor: default;
+      }
+      .calendarpad-calendar a.next-month {
+        color: #FFF;
+        background-color: #FFF;
+        cursor: default;
+      }
+      .calendarpad-day.active {
+        color: #fff !important;
+        background-color: #5489C3 !important;
+      }
+      .calendarpad-day.today {
+        background-color: #dde;
+      }
