@@ -32,7 +32,6 @@
       'onSelect': $empty,
       */
       'z-index': 1,
-      'prefix': 'calendar-',
       'months': 3,
       'weekStartsOnMonday': true, // Use false for Sunday,
       'weekDayNameLength': 3, // 1 for "M", 3 for "Mon", -1 for "Monday"
@@ -41,7 +40,7 @@
 
     initialize: function(element, options) {
       this.setOptions(options);
-      this.container = $(element).addClass('datepicker-component');
+      this.container = $(element).addClass('calendarpad-component');
 
       var now = new Date(),
           selected = this.options.selectedDate ? new Date().parse(this.options.selectedDate) : null;
@@ -74,25 +73,25 @@
 
       // Build HTML
       this.container.empty();
-      var controls = new Element('div', { 'class': 'datepicker-controls' });
+      var controls = new Element('div', { 'class': 'calendarpad-controls' });
       var previous = new Element('a', {
-        'class': 'datepicker-control datepicker-previous',
+        'class': 'calendarpad-control calendarpad-previous',
         'html': '&laquo;',
         'href': '#'
       }).inject(controls);
       var next = new Element('a', {
-        'class': 'datepicker-control datepicker-next',
+        'class': 'calendarpad-control calendarpad-next',
         'html': '&raquo;',
         'href': '#'
       }).inject(controls);
             
       this.pad = this.build(year, month);
-      this.wrap = new Element('div', { 'class': 'datepicker-wrapper' }).grab(this.pad);
+      this.wrap = new Element('div', { 'class': 'calendarpad-wrapper' }).grab(this.pad);
       this.container.adopt(controls, this.wrap);
       
       // Add event listeners
       this.container.addEvents({
-        'click:relay(.datepicker-previous)': function(e){
+        'click:relay(.calendarpad-previous)': function(e){
           e.preventDefault();
 
           var next = new Date(this.year, this.month).decrement('month', 3);
@@ -108,7 +107,7 @@
 
         }.bindWithEvent(this),
 
-        'click:relay(.datepicker-next)': function(e){
+        'click:relay(.calendarpad-next)': function(e){
           e.preventDefault();
 
           var next = new Date(this.year, this.month).increment('month', 3);
@@ -136,7 +135,7 @@
       var curr = new Date(year, month),
           next = new Date(year, month).increment('month', 1),
           prev = new Date(year, month).decrement('month', 1),
-          pad  = new Element('div', { 'class': 'datepicker-months' });
+          pad  = new Element('div', { 'class': 'calendarpad-months' });
       
       [prev, curr, next].each(function(d){
         this.renderMonth(d.get('year'), d.get('month')).inject(pad);
@@ -148,7 +147,7 @@
     
     renderMonth: function(year, month) {
       var self = this,
-          calendar = new Element('div', { 'class': 'datepicker-calendar' });
+          calendar = new Element('div', { 'class': 'calendarpad-calendar' });
 
       var curr = new Date(year, month),
           next = new Date(year, month).increment('month', 1),
@@ -162,13 +161,13 @@
       if(runningDay < 0) runningDay = 6;
 
       new Element('div', {
-        'class': 'datepicker-title',
+        'class': 'calendarpad-title',
         'text': Date.getMsg('months')[month] + ' ' + year
       }).inject(calendar);
       
       this.dayNames.each(function(day) {
         new Element('abbr', {
-          'class': 'datepicker-day-title',
+          'class': 'calendarpad-day-title',
           'text': (self.options.weekDayNameLength > 0 ? day.substr(0, self.options.weekDayNameLength) : day),
           'title': day
         }).inject(calendar);
@@ -176,7 +175,7 @@
 
       for (i = runningDay; i > 0; i--) {
         new Element('a', {
-          'class': 'datepicker-day previous-month',
+          'class': 'calendarpad-day previous-month',
           'text': (Date.daysInMonth(prev) - i + 1).toString().pad(2, '0', 'left'),
           'href': '#' + prev.get('year') + '-' + (prev.get('month') + 1) + '-' + Date.daysInMonth(prev) - i
         }).inject(calendar);
@@ -185,7 +184,7 @@
       for(i = 1; i <= daysInMonth; i++) {
         var today = new Date(year, month, i);
         new Element('a', {
-          'class': 'datepicker-day this-month' + (today.diff(self.today) == 0 ? ' today' : '') + (today.diff(self.active) == 0 ? ' active' : ''),
+          'class': 'calendarpad-day this-month' + (today.diff(self.today) == 0 ? ' today' : '') + (today.diff(self.active) == 0 ? ' active' : ''),
           'text': i.toString().pad(2, '0', 'left'),
           'href': '#' + year + '-' + (month + 1) + '-' + i,
           'events': {
@@ -209,7 +208,7 @@
       if(daysInThisWeek > 1) {
     		for(i = 1; i <= (8 - daysInThisWeek); i++) {
     			new Element('a', {
-            'class': 'datepicker-day next-month',
+            'class': 'calendarpad-day next-month',
             'text': i.toString().pad(2, '0', 'left'),
             'href': '#' + next.get('year') + '-' + (next.get('month') + 1) + '-' + i
           }).inject(calendar);
@@ -219,7 +218,7 @@
       return calendar;
     },
     pick: function(element) {
-      this.container.getElements('.datepicker-day.active').removeClass('active');
+      this.container.getElements('.calendarpad-day.active').removeClass('active');
       element.addClass('active');
       this.active = new Date().parse(element.get('href'));
       this.fireEvent('onSelect', { 'date': this.active });
