@@ -182,7 +182,7 @@
       for(i = 1; i <= daysInMonth; i++) {
         var today = new Date(year, month, i);
         new Element('a', {
-          'class': 'calendarpad-day this-month' + (today.diff(self.today) == 0 ? ' today' : '') + (today.diff(self.active) == 0 ? ' active' : ''),
+          'class': 'calendarpad-day this-month' + (today.diff(self.today, 'ms') == 0 ? ' today' : '') + (today.diff(self.active, 'ms') == 0 ? ' active' : ''),
           'text': i.toString().pad(2, '0', 'left'),
           'href': '#' + year + '-' + (month + 1) + '-' + i,
           'events': {
