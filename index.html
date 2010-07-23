@@ -1,7 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
@@ -10,26 +9,27 @@
 	<style type="text/css">
 		body {
   		margin-top: 1.0em;
-  		background-color: #c6d642;
+  		background-color: #fff;
 		  font-family: "Helvetica,Arial,FreeSans";
-  		color: #000000;
+  		color: #666;
     }
     #container {
       margin: 0 auto;
       width: 700px;
     }
-		h1 { font-size: 3.8em; color: #3929bd; margin-bottom: 3px; }
+		h1 { font-size: 3.8em; color: #000; margin-bottom: 3px; }
 		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #3929bd; }
-    h3 { text-align: center; color: #3929bd; }
-    a { color: #3929bd; }
+		h2 { font-size: 1.5em; color: #000; }
+    h3 { text-align: center; color: #000; }
+    a { color: #000; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
     .download { float: right; }
 		pre { background: #000; color: #fff; padding: 15px;}
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
 	</style>
+	
+	<link rel="stylesheet" href="calendarpad.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	
 </head>
 
@@ -52,7 +52,37 @@
       A Mootools based class for a 3 months date selector.
     </div>
 
-    <p>CalendarPad allows you to pick a date from a 3-months calendar.</p><h2>Dependencies</h2>
+    <p>CalendarPad allows you to pick a date from a 3-months calendar.</p>
+
+<h2>Demo</h2>
+<section class="container">
+  
+  <input type="date" name="eventdate" value="2010-07-01" id="eventdate">
+  
+  <div id="calendar"> </div>
+  
+</section>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js" type="text/javascript" charset="utf-8"></script>
+<script src="mootools-1.2.4.4-more.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="calendarpad.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+  
+  var myCal = new CalendarPad('calendar', {
+    selectedDate: $('eventdate').get('value'),
+    onSelect: function(e){
+      $('eventdate').set('value', e.date.format('%Y-%m-%d'));
+    },
+  });
+  
+  
+</script>
+
+
+    
+<h2>Dependencies</h2>
 <p>  * Mootools Core 1.2.4
   * Mootools More 1.2.4:
     - Date
@@ -65,9 +95,12 @@
 <h2>License</h2>
 <p>MIT-style</p>
 <h2>Authors</h2>
-<p>Andrey Okonetchnikov (andrej.okonetschnikow@gmail.com)<br/><br/>      </p>
+<p>Andrey Okonetchnikov (andrej.okonetschnikow@gmail.com)
+<br/>
+<br/>      </p>
 <h2>Contact</h2>
-<p>Andrey Okonetchnikov (andrej.okonetschnikow@gmail.com)<br/>      </p>
+<p>Andrey Okonetchnikov (andrej.okonetschnikow@gmail.com)
+<br/>      </p>
 
 
     <h2>Download</h2>
