@@ -218,7 +218,7 @@
     pick: function(element) {
       this.container.getElements('.calendarpad-day.active').removeClass('active');
       element.addClass('active');
-      this.active = new Date().parse(element.get('href'));
+      this.active = new Date().parse(element.get('href').replace('#',''));
       this.fireEvent('onSelect', { 'date': this.active });
     }
   });
